@@ -1,15 +1,71 @@
 import { useCart } from "@/contexts/CartContext";
 import { ChevronLeft, Minus, Plus, X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useState } from "react";
+import AxiosInstance from "@/config/axiosInstance";
+import { useUserLogged } from "@/contexts/UserContext";
 
 const Cart = () => {
   const navigate = useNavigate();
+
+  const { isLoggedIn } = useUserLogged();
   const { state, dispatch, totalPrice } = useCart();
   // const getQuantity = (id: string) => {
   //   const item = state.cartItems.find((i) => i.id === id);
-
+  const [adress, setAdress] = useState("");
+  const [loading, setLoading] = useState(false);
   //   return item?.quantity;
   // };
+  console.log(isLoggedIn);
+  if (!isLoggedIn) {
+    console.log(window.location.toString());
+    localStorage.setItem("from", "/cart");
+    navigate("/login");
+  }
+  const handleOrder = async () => {
+    const orderObject = {
+      taxPrice: 10.0,
+      shippingPrice: 5.0,
+      isPaid: true,
+      paidAt: "2024-06-02T00:00:00.000Z",
+      isDelivered: true,
+      paymentResult: {
+        id: "abc123",
+        status: "Completed",
+        update_time: "2024-06-02T00:00:00.000Z",
+        email_address: "user@example.com",
+      },
+      paymentMethod: "PayPal",
+      shippingAddress: {
+        address: adress,
+        city: "Anytown",
+        postalCode: "12345",
+        country: "USA",
+      },
+      orderItems: state.cartItems,
+    };
+    try {
+      setLoading(true);
+      const createOrder = await AxiosInstance.post(`/orders`, { orderObject });
+      const response = createOrder.data;
+      if (response.status(201)) {
+        alert("Order Submitted");
+      }
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      alert("Something went wrong");
+    }
+  };
   return (
     <div className=" min-h-screen text-white">
       <div className=" w-full  text-center text-3xl font-bold text-white bg-mainBg md:h-[40vh] h-[20vh] flex justify-center items-center ">
@@ -30,7 +86,16 @@ const Cart = () => {
               <span>Quantity</span>
               <span>Subtotal</span>
             </div>
-            {state.cartItems.map((cartItm) => (
+            {state.cartItems.length < 1 && (
+              <span className=" mt-7 px-4 text-black font-bold text-lg">
+                {" "}
+                Cart Empty{" "}
+                <Link className=" text-secColor" to="/">
+                  Go Home
+                </Link>{" "}
+              </span>
+            )}
+            {state?.cartItems?.map((cartItm) => (
               <div
                 key={cartItm._id}
                 className="grid grid-cols-5  px-2 py-5  text-black font-medium "
@@ -38,7 +103,7 @@ const Cart = () => {
                 <div className=" col-span-2 flex gap-3 items-center">
                   <div className=" size-10 rounded-sm bg-bgGray">
                     <img
-                      src={cartItm.image || ""}
+                      src={cartItm.imageUrl || ""}
                       className="w-full h-full object-contain"
                       alt=""
                     />
@@ -51,7 +116,7 @@ const Cart = () => {
                     onClick={() =>
                       dispatch({ type: "REDUCE_ITEM", payload: cartItm })
                     }
-                    className="size-7  border rounded-full  flex justify-center items-center  bg-bgGray text-white text-sm"
+                    className="size-7 cursor-pointer border rounded-full  flex justify-center items-center  bg-bgGray text-white text-sm"
                   >
                     <Minus
                       size={10}
@@ -59,7 +124,12 @@ const Cart = () => {
                     />
                   </div>
                   <span>{cartItm.quantity}</span>
-                  <div className="size-7  border rounded-full  flex justify-center items-center  bg-bgGray text-white text-sm">
+                  <div
+                    onClick={() =>
+                      dispatch({ type: "ADD_ITEM", payload: cartItm })
+                    }
+                    className="size-7  cursor-pointer border rounded-full  flex justify-center items-center  bg-bgGray text-white text-sm"
+                  >
                     <Plus
                       size={10}
                       color="rgb(208 148 35 / var(--tw-bg-opacity))"
@@ -94,11 +164,47 @@ const Cart = () => {
               </div>
               <div className=" w-full flex bg-white py-3  justify-between p-2">
                 <span>Total:</span>
-                <span>#85</span>
+                <span>#{totalPrice.toFixed(2)}</span>
               </div>
-              <button className=" w-[70%] rounded-[30px] text-white flex justify-center items-center mt-3 mx-auto py-4 bg-secColor">
-                Proceed To Checkout
-              </button>
+              <Dialog>
+                {state.cartItems.length > 0 && (
+                  <DialogTrigger className=" mx-auto flex">
+                    {" "}
+                    <button className=" w-full px-7   rounded-[30px] text-white flex justify-center items-center mt-3 mx-auto py-4 bg-secColor">
+                      Proceed To Checkout
+                    </button>
+                  </DialogTrigger>
+                )}
+                <DialogContent className=" flex flex-col bg-white">
+                  <DialogHeader>
+                    <DialogTitle>
+                      Enter Necessary Details To Process Your Order
+                    </DialogTitle>
+                  </DialogHeader>
+                  <DialogDescription className="h-fit mt-3 bg-black">
+                    <input
+                      onChange={(e) => setAdress(e.target.value)}
+                      type="text"
+                      placeholder="address"
+                      className=" border w-full px-5  border-gray-700 h-[50px]"
+                    />
+                  </DialogDescription>
+                  <DialogFooter>
+                    <button
+                      disabled={loading}
+                      onClick={handleOrder}
+                      className={` ${
+                        loading
+                          ? "bg-secColor/30 cursor-not-allowed"
+                          : "bg-secColor cursor-pointer "
+                      } px-6 py-4 text-nowrap text-white font-medium
+        `}
+                    >
+                      {loading ? "Creating Order" : "Submit"}
+                    </button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
         </div>

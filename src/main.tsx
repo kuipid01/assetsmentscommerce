@@ -10,6 +10,7 @@ import Register from "./pages/Register";
 import { CartProvider } from "./contexts/CartContext.tsx";
 import AdminDashboard from "./pages/AdminDashboard.tsx";
 import Cart from "./pages/Cart.tsx";
+import { UserLoggedProvider } from "./contexts/UserContext.tsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -43,9 +44,11 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <CartProvider>
-      <RouterProvider router={router} />
-    </CartProvider>
+    <UserLoggedProvider>
+      <CartProvider>
+        <RouterProvider router={router} />
+      </CartProvider>
+    </UserLoggedProvider>
     <Footer />
   </React.StrictMode>
 );

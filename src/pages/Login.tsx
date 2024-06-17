@@ -51,10 +51,14 @@ const Login: React.FC = () => {
         email,
         password,
       });
-      const { data } = await response.data();
-      console.log(data);
-      localStorage.setItem("atk", data.token);
-      navigate("/login");
+      const { token } = await response.data;
+
+      localStorage.setItem("atk", token);
+      const prevLink = localStorage.getItem("from");
+      if (prevLink) {
+        console.log(prevLink);
+        navigate(prevLink);
+      } else navigate("/");
     } catch (error) {
       console.log(error);
     }

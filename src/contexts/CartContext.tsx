@@ -14,7 +14,7 @@ interface CartItem {
   _id: string;
   name: string;
   quantity: number;
-  image?: string;
+  imageUrl?: string;
   price: number;
 }
 

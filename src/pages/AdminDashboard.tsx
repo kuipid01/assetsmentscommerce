@@ -20,8 +20,11 @@ import { useEffect, useState } from "react";
 import AxiosInstance from "@/config/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
+import { useUserLogged } from "@/contexts/UserContext";
+import { BsHouseDoor } from "react-icons/bs";
 
 const AdminDashboard = () => {
+  const { isLoggedIn } = useUserLogged();
   const navigate = useNavigate();
   const [Orders, setOrders] = useState<any>([]);
 
@@ -34,7 +37,11 @@ const AdminDashboard = () => {
     };
     fetchOrders();
   }, []);
-  console.log(Orders);
+  if (!isLoggedIn) {
+    console.log(window.location.toString());
+    localStorage.setItem("from", "/dashboard");
+    navigate("/login");
+  }
   const GetTotalPrice = (order: any) => {
     // console.log(order);
     // return 1;
@@ -52,12 +59,21 @@ const AdminDashboard = () => {
       <div className=" w-full h-[20ch] bg-mainBg grid place-items-center text-2xl text-white font-bold">
         Dashboard
       </div>
-      <div
-        onClick={() => navigate(-1)}
-        className=" flex text-secColor my-5 cursor-pointer gap-3 pl-10 font-bold"
-      >
-        <ChevronLeft color="rgb(208 148 35)" /> Back To Products
+      <div className=" px-10 flex  items-center justify-between">
+        <div
+          onClick={() => navigate(-1)}
+          className=" flex text-secColor my-5 cursor-pointer gap-3  font-bold"
+        >
+          <ChevronLeft color="rgb(208 148 35)" /> Back To Products
+        </div>
+        <div
+          onClick={() => navigate("/")}
+          className=" flex items-center text-secColor my-5 cursor-pointer gap-3  font-bold"
+        >
+          Back To Home <BsHouseDoor color="rgb(208 148 35)" />
+        </div>
       </div>
+
       <div className=" flex w-[90%] mx-auto my-5 justify-between">
         <div className=" flex items-end gap-1">
           <span className=" text-lg">Orders</span>

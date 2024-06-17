@@ -1,5 +1,4 @@
 import { Minus, Plus, X } from "lucide-react";
-import React from "react";
 
 const Cart = () => {
   return (
@@ -16,9 +15,9 @@ const Cart = () => {
               <span>Quantity</span>
               <span>Subtotal</span>
             </div>
-            {[1, 2, 3].map((cartItm, key) => (
+            {[1, 2, 3].map((cartItm) => (
               <div
-                key={key}
+                key={cartItm}
                 className="grid grid-cols-5 place-items-center px-2 py-5  text-black font-medium "
               >
                 <div className=" col-span-2 flex gap-3 items-center">

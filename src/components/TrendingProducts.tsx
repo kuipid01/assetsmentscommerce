@@ -1,4 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import AxiosInstance from "@/config/axiosInstance";
 import { ChevronRight, Heart, ShoppingBag } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 export const phoneProducts = [
@@ -84,6 +87,15 @@ export const phoneProducts = [
   },
 ];
 const TrendingComponents = () => {
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    const fetchTrendingProducts = async () => {
+      const response = await AxiosInstance.get("/products");
+      const { products } = await response.data;
+      setProducts(products);
+    };
+    fetchTrendingProducts();
+  }, []);
   return (
     <div className=" w-full   ">
       <div className=" h-fit  pt-[1px] flex flex-col gap-5 mx-auto max-w-[90%]">
@@ -97,7 +109,7 @@ const TrendingComponents = () => {
           </div>
         </div>
         <div className=" flex mt-10 w-full flex-wrap gap-[20px] overflow-y-hidden">
-          {phoneProducts.map((product, key) => (
+          {products.map((product, key) => (
             <RectCard key={key} product={product} />
           ))}
         </div>
@@ -108,31 +120,20 @@ const TrendingComponents = () => {
 
 export default TrendingComponents;
 
-export const RectCard = ({
-  product,
-}: {
-  product: {
-    id: number;
-    name: string;
-    image: string;
-    discount: number;
-    price: number;
-    like: boolean;
-  };
-}) => {
+export const RectCard = ({ product }: any) => {
   return (
     <Link
-      to={`/product/${product.id}`}
-      className=" flex relative rounded-[30px] cursor-pointer bg-bgGray w-[calc(50-20px)] md:w-[calc(33.3333%-20px)] lg:w-[calc(25%-20px)] h-[350px]  shrink-0 flex-col gap-3 items-center"
+      to={`/product/${product._id}`}
+      className=" flex relative rounded-[30px] cursor-pointer bg-bgGray w-[calc(50%-20px)] md:w-[calc(33.3333%-20px)] lg:w-[calc(25%-20px)] h-[350px]  shrink-0 flex-col gap-3 items-center"
     >
       <div className="size-10 rounded-2xl flex justify-center items-center absolute top-3 left-3 px-3 py-1 bg-mainBg text-white text-sm">
-        {Math.round(product.discount / 100)}%
+        10%
       </div>
       <div className="size-10 rounded-2xl flex justify-center items-center absolute top-3 right-3 px-3 py-1 bg-white text-white text-sm">
         <Heart stroke="gray" fill={product.like ? "red" : "gray"} />
       </div>
-      <div className=" rounded-full size-[250px]  object-contain">
-        <img src={product.image} alt="product image" />
+      <div className=" rounded-full overflow-hidden size-[250px]  object-contain">
+        <img src={product.imageUrl} alt="product image" />
       </div>
       <div className="h-[80px] justify-between flex items-center px-7 text-white w-full rounded-[30px] bg-mainBg">
         <div className=" flex flex-col max-w-[70%]">

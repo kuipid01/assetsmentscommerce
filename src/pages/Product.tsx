@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { phoneProducts } from "@/components/TrendingProducts";
 import AxiosInstance from "@/config/axiosInstance";
@@ -15,10 +16,16 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 
 const Product = () => {
   const { state, dispatch } = useCart();
+
+  const getQuantity = (id: any) => {
+    const item = state.cartItems.find((i) => i._id === id);
+
+    return item?.quantity;
+  };
   const navigate = useNavigate();
   const [product, setProduct] = useState<any>({});
   const { id } = useParams();
-  console.log(id);
+
   useEffect(() => {
     const fetchTrendingProducts = async () => {
       const response = await AxiosInstance.get(`/products/${id}`);
@@ -28,7 +35,9 @@ const Product = () => {
     };
     fetchTrendingProducts();
   }, []);
-  console.log(product);
+  if (!id) return;
+  console.log(state.cartItems);
+  console.log(state.cartItems.find((item) => item._id === id));
   return (
     <div className=" flex flex-col gap-5">
       <div className=" w-full text-center text-3xl font-bold text-white bg-mainBg md:h-[40vh] h-[20vh] flex justify-center items-center ">
@@ -36,7 +45,7 @@ const Product = () => {
       </div>
       <div
         onClick={() => navigate(-1)}
-        className=" flex text-secColor gap-3 pl-10 font-bold"
+        className=" flex  cursor-pointer text-secColor gap-3 pl-10 font-bold"
       >
         <ChevronLeft color="rgb(208 148 35)" /> Back To Products
       </div>
@@ -70,22 +79,43 @@ const Product = () => {
               #100000
             </span>
           </h1>
-          <div className=" rounded-[30px] py-2 mb-[20px] px-7 gap-4 bg-bgGray flex items-center">
-            <div className="size-10  border rounded-full  flex justify-center items-center px-3 py-1 bg-white text-white text-sm">
-              <Minus color="rgb(208 148 35 / var(--tw-bg-opacity))" />
-            </div>
-            <span>1</span>
-            <div className="size-10  border rounded-full  flex justify-center items-center px-3 py-1 bg-white text-white text-sm">
-              <Plus color="rgb(208 148 35 / var(--tw-bg-opacity))" />
-            </div>
-          </div>
+
           <div className=" flex h-[60px]  items-center gap-3">
-            <button className=" h-full w-fit px-[30px]  text-white bg-secColor rounded-[30px] flex items-center">
-              Shop Now <ChevronRight />{" "}
-            </button>
-            <button className=" h-full px-[30px]  bg-mainBg text-white rounded-[30px] flex items-center">
-              Shop Now <ChevronRight />{" "}
-            </button>
+            {state.cartItems.find((item) => item._id === id) ? (
+              <div className="rounded-[30px] py-2  px-7 gap-4 bg-bgGray flex items-center">
+                <div
+                  onClick={() =>
+                    dispatch({ type: "REDUCE_ITEM", payload: product })
+                  }
+                  className="size-10 cursor-pointer border rounded-full flex justify-center items-center px-3 py-1 bg-white text-white text-sm"
+                >
+                  <Minus color="rgb(208 148 35 / var(--tw-bg-opacity))" />
+                </div>
+                <span>{getQuantity(product._id)}</span>
+                <div
+                  onClick={() =>
+                    dispatch({ type: "ADD_ITEM", payload: product })
+                  }
+                  className="size-10 cursor-pointer border rounded-full flex justify-center items-center px-3 py-1 bg-white text-white text-sm"
+                >
+                  <Plus color="rgb(208 148 35 / var(--tw-bg-opacity))" />
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={() => dispatch({ type: "ADD_ITEM", payload: product })}
+                className="h-full w-fit px-[30px] text-white bg-secColor rounded-[30px] flex items-center"
+              >
+                Add To Cart <Plus />{" "}
+              </button>
+            )}
+
+            <Link
+              to="/cart"
+              className=" h-full px-[30px]  bg-mainBg text-white rounded-[30px] flex items-center"
+            >
+              Cart <ChevronRight />{" "}
+            </Link>
             <div className="size-10  border rounded-full  flex justify-center items-center px-3 py-1 bg-white text-white text-sm">
               <Heart color="rgb(208 148 35 / var(--tw-bg-opacity))" />
             </div>

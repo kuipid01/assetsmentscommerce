@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import { CartProvider } from "./contexts/CartContext.tsx";
 import AdminDashboard from "./pages/AdminDashboard.tsx";
+import Cart from "./pages/Cart.tsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/cart",
+    element: <Cart />,
   },
   {
     path: "/login",

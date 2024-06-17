@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Table,
   TableBody,
@@ -15,8 +16,34 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { useEffect, useState } from "react";
+import AxiosInstance from "@/config/axiosInstance";
 
 const AdminDashboard = () => {
+  const [Orders, setOrders] = useState<any>([]);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      const response = await AxiosInstance.get(`/orders`);
+      // const { Orders } = await response.data;
+      console.log(response.data);
+      setOrders(response.data);
+    };
+    fetchOrders();
+  }, []);
+  console.log(Orders);
+  const GetTotalPrice = (order: any) => {
+    // console.log(order);
+    // return 1;
+    const val = order.reduce(
+      (accumulator: number, item: { price: number; qty: number }) => {
+        return accumulator + item.price * item.qty;
+      },
+      0
+    );
+    return val;
+  };
+
   return (
     <div className="min-h-screen w-full flex flex-col">
       <div className=" w-full h-[20ch] bg-mainBg grid place-items-center text-2xl text-white font-bold">
@@ -45,27 +72,33 @@ const AdminDashboard = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow>
-            <TableCell className="font-medium">INV001</TableCell>
-            <TableCell>
-              <img
-                src=""
-                className="size-30 object-cover object-center"
-                alt=""
-              />
-              <span>test product</span>
-            </TableCell>
-            <TableCell>Credit Card</TableCell>
-            <TableCell className="text-right">$250.00</TableCell>
-            <TableCell className="text-right">$250.00</TableCell>
-            <TableCell
-              className={`${
-                status === "Completed " ? "bg-green-400" : "bg-red-600"
-              }`}
-            >
-              $250.00
-            </TableCell>
-          </TableRow>
+          {Orders.map((order: any) => (
+            <TableRow>
+              <TableCell className="font-medium">{order?._id}</TableCell>
+              <TableCell>
+                <img
+                  src={order?.orderItems[0].image}
+                  className="size-30 object-cover object-center"
+                  alt=""
+                />
+                <span>{order?.orderItems[0].name}</span>
+              </TableCell>
+              <TableCell>{order?.shippingAddress.address}</TableCell>
+              <TableCell className="text-right">
+                {new Date(order?.createdAt).toLocaleDateString()}
+              </TableCell>
+              <TableCell className="text-right">
+                {GetTotalPrice(order?.orderItems)}
+              </TableCell>
+              <TableCell
+                className={` w-fit rounded-[10px] grid place-items-center mx-auto my-auto mt-2 text-white uppercase font-bold py-1 ${
+                  order.isDelivered ? "bg-green-400" : "bg-red-400"
+                }`}
+              >
+                {order.isDelivered ? "Delivered" : "On The Way"}
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
       <div className="w-[90%] mx-auto">

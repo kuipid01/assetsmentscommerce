@@ -11,6 +11,7 @@ import { CartProvider } from "./contexts/CartContext.tsx";
 import AdminDashboard from "./pages/AdminDashboard.tsx";
 import Cart from "./pages/Cart.tsx";
 import { UserLoggedProvider } from "./contexts/UserContext.tsx";
+import Products from "./pages/Products.tsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: <AdminDashboard />,
+  },
+  {
+    path: "/products",
+    element: <Products />,
   },
 ]);
 

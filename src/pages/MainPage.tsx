@@ -3,6 +3,7 @@ import FeaturedComponents from "@/components/FeaturedComponents";
 import Navbar from "@/components/Navbar";
 import TrendingComponents from "@/components/TrendingProducts";
 import { Battery, Bolt, Camera, ChevronRight, Shield } from "lucide-react";
+import { Link } from "react-router-dom";
 const features = [
   {
     icon: <Bolt />,
@@ -49,9 +50,12 @@ const MainPage = () => {
               your device, we've got you covered.
             </p>
             <div className=" flex items-center">
-              <button className=" h-[60px] w-fit px-[30px] mt-5 bg-secColor rounded-[30px] flex items-center">
+              <Link
+                to="/products"
+                className=" h-[60px] w-fit px-[30px] mt-5 bg-secColor rounded-[30px] flex items-center"
+              >
                 Shop Now <ChevronRight />{" "}
-              </button>
+              </Link>
               <button className=" h-[60px]  w-fit px-[30px] mt-5 bg-transparent underline rounded-[30px] flex items-center">
                 {" "}
                 Follow Us On Instagram

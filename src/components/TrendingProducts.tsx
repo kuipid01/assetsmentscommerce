@@ -124,7 +124,7 @@ export const RectCard = ({ product }: any) => {
   return (
     <Link
       to={`/product/${product._id}`}
-      className=" flex relative rounded-[30px] cursor-pointer bg-bgGray w-[calc(50%-20px)] md:w-[calc(33.3333%-20px)] lg:w-[calc(25%-20px)] h-[350px]  shrink-0 flex-col gap-3 items-center"
+      className=" flex relative rounded-[30px] mx-auto cursor-pointer bg-bgGray w-[90%] sm:w-[calc(50%-20px)] md:w-[calc(33.3333%-20px)] lg:w-[calc(25%-20px)] h-[350px]  shrink-0 flex-col gap-3 items-center"
     >
       <div className="size-10 rounded-2xl flex justify-center items-center absolute top-3 left-3 px-3 py-1 bg-mainBg text-white text-sm">
         10%

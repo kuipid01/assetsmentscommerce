@@ -13,6 +13,7 @@ import {
 import { useState } from "react";
 import AxiosInstance from "@/config/axiosInstance";
 import { useUserLogged } from "@/contexts/UserContext";
+import Navbar from "@/components/Navbar";
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -63,11 +64,12 @@ const Cart = () => {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      alert("Something went wrong");
+      alert("Something went wro");
     }
   };
   return (
     <div className=" min-h-screen text-white">
+      <Navbar />
       <div className=" w-full  text-center text-3xl font-bold text-white bg-mainBg md:h-[40vh] h-[20vh] flex justify-center items-center ">
         Cart
       </div>

@@ -1,5 +1,5 @@
-import { Search, ShoppingBagIcon, User2Icon } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { ShoppingBagIcon, User2Icon } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -14,20 +14,20 @@ const Navbar = () => {
           />
           <h1 className=" font-bold uppercase text-lg">FlexBuy</h1>
         </div>
-        <ul className="flex gap-3">
-          <li className="cursor-pointer">Home</li>
-          <li className="cursor-pointer">Products</li>
-          <li className="cursor-pointer">Category</li>
-        </ul>
+        <div className="flex gap-3">
+          <Link to="/" className="cursor-pointer">
+            Home
+          </Link>
+          <Link to="/products" className="cursor-pointer">
+            Products
+          </Link>
+        </div>
         <ul className=" flex gap-3">
-          <li className="cursor-pointer">
-            <Search />
-          </li>
           <li onClick={() => navigate("/cart")} className="cursor-pointer">
             {" "}
             <ShoppingBagIcon />
           </li>
-          <li className="cursor-pointer">
+          <li onClick={() => navigate("/dashboard")} className="cursor-pointer">
             {" "}
             <User2Icon />
           </li>

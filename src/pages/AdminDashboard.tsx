@@ -22,6 +22,7 @@ import { useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 import { useUserLogged } from "@/contexts/UserContext";
 import { BsHouseDoor } from "react-icons/bs";
+import Navbar from "@/components/Navbar";
 
 const AdminDashboard = () => {
   const { isLoggedIn } = useUserLogged();
@@ -56,6 +57,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen w-full flex flex-col">
+      <Navbar />
       <div className=" w-full h-[20ch] bg-mainBg grid place-items-center text-2xl text-white font-bold">
         Dashboard
       </div>

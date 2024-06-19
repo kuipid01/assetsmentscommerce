@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import Navbar from "@/components/Navbar";
 import { phoneProducts } from "@/components/TrendingProducts";
 import AxiosInstance from "@/config/axiosInstance";
 import { useCart } from "@/contexts/CartContext";
@@ -40,6 +41,7 @@ const Product = () => {
   console.log(state.cartItems.find((item) => item._id === id));
   return (
     <div className=" flex flex-col gap-5">
+      <Navbar />
       <div className=" w-full text-center text-3xl font-bold text-white bg-mainBg md:h-[40vh] h-[20vh] flex justify-center items-center ">
         {product?.name}
       </div>

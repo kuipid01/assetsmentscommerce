@@ -28,7 +28,14 @@ const AdminDashboard = () => {
   const { isLoggedIn } = useUserLogged();
   const navigate = useNavigate();
   const [Orders, setOrders] = useState<any>([]);
-
+  useEffect(() => {
+    if (!isLoggedIn) {
+      const atk = localStorage.getItem("atk");
+      if (!atk || atk === undefined) {
+        navigate("/login");
+      }
+    }
+  }, []);
   useEffect(() => {
     const fetchOrders = async () => {
       const response = await AxiosInstance.get(`/orders`);
@@ -38,11 +45,7 @@ const AdminDashboard = () => {
     };
     fetchOrders();
   }, []);
-  if (!isLoggedIn) {
-    console.log(window.location.toString());
-    localStorage.setItem("from", "/dashboard");
-    navigate("/login");
-  }
+
   const GetTotalPrice = (order: any) => {
     // console.log(order);
     // return 1;
